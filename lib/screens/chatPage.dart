@@ -53,38 +53,21 @@ class _ChatPageState extends State<ChatPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            const SafeArea(
-              child: Padding(
-                padding: EdgeInsets.only(left: 16, right: 16, top: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text("Conversations", style: TextStyle(
-                        fontSize: 32, fontWeight: FontWeight.bold),)
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
-                child: AppBar(
-                  title: const Text(
-                    "search",
-                  ),
-                  actions: [
-                    IconButton(
-                      onPressed: () {
-                        // method to show the search bar
-                        showSearch(
-                          context: context,
-                          // delegate to customize the search bar
-                          delegate: CustomSearchDelegate(),
-                        );
-                      },
-                      icon: const Icon(Icons.search),
-                    )
-                  ],
-                ),
+            AppBar(
+              title: Text("Conversation"),
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    // method to show the search bar
+                    showSearch(
+                      context: context,
+                      // delegate to customize the search bar
+                      delegate: CustomSearchDelegate(),
+                    );
+                  },
+                  icon: const Icon(Icons.search),
+                )
+              ],
             ),
             ListView.builder(
               itemCount: chatUsers.length,

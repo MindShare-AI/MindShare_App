@@ -15,20 +15,7 @@ class _ProfilePageState extends State<ProfilePage> {
         elevation: 0,
         automaticallyImplyLeading: false,
         backgroundColor: Color(0xff0043ba),
-        flexibleSpace: SafeArea(
-        child: Container(
-          child: Row(
-            children: <Widget>[
-              IconButton(
-                onPressed: (){
-                  Navigator.pop(context);
-                  },
-                icon: const Icon(Icons.arrow_back,color: Colors.black),
-                  ),
-                ],
-              ),
-            ),
-          ),
+        title: Text("Profil"),
         ),
 
       body: Column(
@@ -63,7 +50,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         onPressed: () {},
                         heroTag: 'mesage',
                         elevation: 0,
-                        backgroundColor: Colors.red,
+                        backgroundColor: Colors.yellow,
                         label: const Text("Message"),
                         icon: const Icon(Icons.message_rounded),
                       ),

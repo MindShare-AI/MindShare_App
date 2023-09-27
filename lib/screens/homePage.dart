@@ -30,43 +30,31 @@ class _HomePageState extends State<HomePage> {
     }
 
     return Scaffold(
-      body: Row(
-        children: [
-          SafeArea(
-              child: NavigationRail(
-                extended: false,
-                destinations: const [
-                  NavigationRailDestination(
-                    icon: Icon(Icons.message),
-                    label: Text(''),
+      body:
+        Container(
+          color: Theme.of(context).colorScheme.primaryContainer,
+          child: page,
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+                items: [
+                  BottomNavigationBarItem(
+                  icon: Icon(Icons.message),
+                  label: '',
                   ),
-                  NavigationRailDestination(
-                    icon: Icon(Icons.account_box),
-                    label: Text(''),
+                  BottomNavigationBarItem(
+                  icon: Icon(Icons.account_box),
+                  label: '',
                   ),
-                  NavigationRailDestination(
-                    icon: Icon(Icons.assignment_outlined),
-                    label: Text(''),
+                  BottomNavigationBarItem(
+                  icon: Icon(Icons.assignment_outlined),
+                  label: '',
                   ),
                 ],
-                selectedIndex: selectedIndex,
-                onDestinationSelected: (value) {
-
-                  // ↓ Replace print with this.
-                  setState(() {
-                    selectedIndex = value;
-                  });
-              },
-            ),
-          ),
-          Expanded(
-            child: Container(
-              color: Theme.of(context).colorScheme.primaryContainer,
-              child: page,
-            ),
-          ),
-        ],
-      ),
-    );
+                  onTap: (index) {
+                    setState(() {
+                      selectedIndex = index;
+                    });
+                  }, currentIndex: selectedIndex)
+          );
   }
 }

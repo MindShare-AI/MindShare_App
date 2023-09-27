@@ -45,10 +45,11 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //backgroundColor: Colors.grey[800],
         appBar: AppBar(
           elevation: 0,
           automaticallyImplyLeading: false,
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.grey[800],
           flexibleSpace: SafeArea(
             child: Container(
               padding: const EdgeInsets.only(right: 16),
@@ -58,7 +59,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                     onPressed: (){
                       Navigator.pop(context);
                     },
-                    icon: const Icon(Icons.arrow_back,color: Colors.black,),
+                    icon: const Icon(Icons.arrow_back,color: Colors.white,),
                   ),
                   const SizedBox(width: 2,),
               Column(

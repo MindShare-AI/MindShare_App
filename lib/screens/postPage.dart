@@ -20,7 +20,8 @@ class PostPage extends StatefulWidget {
 class _PostPageState extends State<PostPage> {
 
   List<Post> posts = [
-    Post(username: "gueez",content: "salut mon reuf"),
+    Post(username: "gueez",content: "Salut mon reuf", date: "01/08/2022"),
+    Post(username: "zefezf",content: "Zefez", date: "21/04/2023"),
   ];
 
   @override
@@ -47,7 +48,13 @@ class _PostPageState extends State<PostPage> {
                     ),
                   ),
                   SizedBox(height: 8),
-                  Text(posts[index].content),
+                  Text(posts[index].content,
+                    style: TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                  Text(
+                      posts[index].date,
+                      style: TextStyle(color: Colors.black.withOpacity(0.6)),
+                  ),
                   SizedBox(height: 8),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
