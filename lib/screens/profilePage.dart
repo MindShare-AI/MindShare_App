@@ -11,6 +11,26 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        backgroundColor: Color(0xff0043ba),
+        flexibleSpace: SafeArea(
+        child: Container(
+          child: Row(
+            children: <Widget>[
+              IconButton(
+                onPressed: (){
+                  Navigator.pop(context);
+                  },
+                icon: const Icon(Icons.arrow_back,color: Colors.black),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+
       body: Column(
         children: [
           const Expanded(flex: 2, child: _TopPortion()),

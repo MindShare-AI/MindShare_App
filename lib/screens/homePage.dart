@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mindshare_ai/screens/chatPage.dart';
+import 'package:mindshare_ai/screens/postPage.dart';
 import 'package:mindshare_ai/screens/profilePage.dart';
 
 class HomePage extends StatefulWidget{
@@ -21,6 +22,9 @@ class _HomePageState extends State<HomePage> {
       case 1:
         page = ProfilePage();
         break;
+      case 2:
+        page = PostPage();
+        break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
     }
@@ -38,6 +42,10 @@ class _HomePageState extends State<HomePage> {
                   ),
                   NavigationRailDestination(
                     icon: Icon(Icons.account_box),
+                    label: Text(''),
+                  ),
+                  NavigationRailDestination(
+                    icon: Icon(Icons.assignment_outlined),
                     label: Text(''),
                   ),
                 ],
