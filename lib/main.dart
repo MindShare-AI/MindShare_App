@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mindshare_ai/screens/chatPage.dart';
 import 'package:mindshare_ai/screens/homePage.dart';
 import 'package:mindshare_ai/screens/profilePage.dart';
 

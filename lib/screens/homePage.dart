@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mindshare_ai/screens/chatPage.dart';
+//import 'package:mindshare_ai/screens/chatPage.dart';
 import 'package:mindshare_ai/screens/postPage.dart';
 import 'package:mindshare_ai/screens/profilePage.dart';
 
@@ -16,14 +16,14 @@ class _HomePageState extends State<HomePage> {
 
     Widget page;
     switch (selectedIndex) {
-      case 0:
+      /* Update case 0:
         page = ChatPage();
+        break;*/
+      case 0:
+        page = PostPage();
         break;
       case 1:
         page = ProfilePage();
-        break;
-      case 2:
-        page = PostPage();
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
@@ -36,17 +36,18 @@ class _HomePageState extends State<HomePage> {
           child: page,
         ),
         bottomNavigationBar: BottomNavigationBar(
-                items: [
-                  BottomNavigationBarItem(
-                  icon: Icon(Icons.message),
+          backgroundColor: Color.fromARGB(255, 15, 15, 30),
+                items: const [
+                  /*BottomNavigationBarItem(
+                  icon: Icon(Icons.message, color: Colors.white,),
                   label: '',
+                  ),*/
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.assignment_outlined, color: Colors.white,),
+                    label: '',
                   ),
                   BottomNavigationBarItem(
-                  icon: Icon(Icons.account_box),
-                  label: '',
-                  ),
-                  BottomNavigationBarItem(
-                  icon: Icon(Icons.assignment_outlined),
+                  icon: Icon(Icons.account_box, color: Colors.white,),
                   label: '',
                   ),
                 ],
