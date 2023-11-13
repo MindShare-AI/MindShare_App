@@ -30,7 +30,7 @@ class _PostPageState extends State<PostPage> {
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 15, 15, 30),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Color.fromARGB(255, 15, 15, 30),
         toolbarHeight: 70,
         title: Image.asset('images/logoMindshare.png',
           height: 60,),
