@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:mindshare_ai/screens/profilePage.dart';
+import '../models/chatUsersModel.dart';
 import '../models/postModel.dart';
 import 'commentaryPostPage.dart';
 import 'package:http/http.dart' as http;
@@ -23,18 +25,50 @@ class PostPage extends StatefulWidget {
 }
 
 class _PostPageState extends State<PostPage> {
-  List<Post> posts = [];
+  final List<Post> posts = [];
+  final Map<int, int> commentsCount = {};
+  final Map<int ,ChatUsers> accounts = {};
 
   Future<void> fetchPost(List<Post> posts) async {
-    final response = await http
+    final responsePost = await http
         .get(Uri.parse('https://mindshare-ai.alwaysdata.net/api/post'));
 
-    if (response.statusCode == 200) {
-      final body = jsonDecode(response.body);
+    if (responsePost.statusCode == 200) {
+      final body = jsonDecode(responsePost.body);
       for(var i = 0; i < body.length; i++) {
-        posts.add(Post.fromJson(body[i] as Map<String, dynamic>));
+        final Post currentPost = Post.fromJson(body[i] as Map<String, dynamic>);
+
+        if (currentPost.post_commented != null) {
+          commentsCount.update(currentPost.post_commented!, (value) => value + 1);
+        } else {
+          posts.add(currentPost);
+          commentsCount[currentPost.id_post] = 0;
+        }
       }
 
+      // If the server did return a 200 OK response,
+      setState(() {
+
+      });
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load Post');
+    }
+  }
+
+
+  Future<void> fetchAccount(Map<int ,ChatUsers> accounts) async {
+    final responseUser = await http
+        .get(Uri.parse('https://mindshare-ai.alwaysdata.net/api/account'));
+
+    if (responseUser.statusCode == 200) {
+      final body = jsonDecode(responseUser.body);
+
+      for(var i = 0; i < body.length; i++) {
+        final ChatUsers currentUser = ChatUsers.fromJson(body[i] as Map<String, dynamic>);
+        accounts[currentUser.id] = currentUser;
+      }
       // If the server did return a 200 OK response,
       setState(() {
 
@@ -46,16 +80,17 @@ class _PostPageState extends State<PostPage> {
     }
   }
 
+
   @override
   void initState() {
     super.initState();
+    fetchAccount(accounts);
     fetchPost(posts);
-
   }
 
   @override
   Widget build(BuildContext context) {
-    if (posts.length > 0) {
+    if (posts.isNotEmpty && accounts.isNotEmpty) {
       return Scaffold(
           backgroundColor: Color.fromARGB(255, 15, 15, 30),
           appBar: AppBar(
@@ -69,6 +104,7 @@ class _PostPageState extends State<PostPage> {
           ListView.builder(
             itemCount: posts.length, // Nombre de posts à afficher
             itemBuilder: (context, index) {
+              final int idAcc = posts[index].account;
               return Card(
                 color: Color.fromARGB(255, 15, 15, 34),
                 elevation: 20,
@@ -83,9 +119,17 @@ class _PostPageState extends State<PostPage> {
                           Expanded(
                             child: Row(
                               children: <Widget>[
-                                CircleAvatar(
-                                  backgroundImage: NetworkImage("https://images.unsplash.com/photo-1511623785848-021573a3a04f?auto=format&fit=crop&q=80&w=2070&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
-                                  maxRadius: 30,
+                                GestureDetector(
+                                  onTap : (){
+                                    Navigator.push(context, MaterialPageRoute(builder: (context){
+                                      return ProfilePage(account: posts[index].account);
+                                    }));
+                                  },
+                                  child : CircleAvatar(
+                                    backgroundImage: AssetImage('images/${accounts[idAcc]?.lastName}${accounts[idAcc]?.firstName}.jpg'),
+                                    //NetworkImage("https://images.unsplash.com/photo-1511623785848-021573a3a04f?auto=format&fit=crop&q=80&w=2070&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
+                                    maxRadius: 30,
+                                  ),
                                 ),
                                 SizedBox(width: 16,),
                                 Expanded(
@@ -94,7 +138,7 @@ class _PostPageState extends State<PostPage> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: <Widget>[
-                                        Text("John Wick", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),),
+                                        Text( accounts[idAcc]!.firstName + " " + accounts[idAcc]!.lastName, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),),
                                         SizedBox(height: 6,),
                                       ],
                                     ),
@@ -119,14 +163,14 @@ class _PostPageState extends State<PostPage> {
 
                         children: [
                           Text(
-                          "Réponses", //Nombre de commentaires aux posts
+                          commentsCount[idAcc].toString() + " Réponses", //Nombre de commentaires aux posts
                             style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey),
                           ),
                           IconButton(
                             icon: Icon(Icons.comment, color: Colors.white70,),
                             onPressed: () {
                               Navigator.push(context, MaterialPageRoute(builder: (context){
-                                return CommentaryPost(account: 1);
+                                return CommentaryPost(account: posts[index].id_post);
                               }));
                             },
                           )
@@ -147,6 +191,7 @@ class _PostPageState extends State<PostPage> {
           )
       );
     }
+
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 15, 15, 30),
       appBar: AppBar(

@@ -23,7 +23,7 @@ class _HomePageState extends State<HomePage> {
         page = PostPage();
         break;
       case 1:
-        page = ProfilePage();
+        page = ProfilePage(account: 1,);
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');

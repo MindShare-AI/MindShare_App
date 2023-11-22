@@ -1,78 +1,109 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 import '../models/chatUsersModel.dart';
 import '../models/postModel.dart';
-import 'commentaryPostPage.dart';
+import 'package:http/http.dart' as http;
+
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({Key? key}) : super(key: key);
+  final int account;
+
+  ProfilePage({required this.account});
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
+  _ProfilePageState createState() {
+    return _ProfilePageState();
+  }
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final ChatUsers user = ChatUsers(
-    name: "Debra Hawkins",
-    imageURL:
-        'https://images.unsplash.com/photo-1575739967915-f06fdc268a5b?auto=format&fit=crop&q=80&w=1982&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  );
+  final List<ChatUsers> user = [];
+  final List<Post> posts = [];
 
-  final List<Post> posts = [
-    Post(
-        id_post: 1,
-        account: 1,
-        content: "C'est Incroyable ce qu'il se passe aujourd'hui !!",
-        date: "01/08/2022",
-        post_commented: 1),
-    Post(
-        id_post: 2,
-        account: 2,
-        content: "J'aime trop les bonbons ;)",
-        date: "21/04/2023",
-        post_commented: 1),
-    Post(
-        id_post: 1,
-        account: 1,
-        content: "C'est Incroyable ce qu'il se passe aujourd'hui !!",
-        date: "01/08/2022",
-        post_commented: 1),
-    Post(
-        id_post: 2,
-        account: 2,
-        content: "J'aime trop les bonbons ;)",
-        date: "21/04/2023",
-        post_commented: 1),
-    Post(
-        id_post: 1,
-        account: 1,
-        content: "C'est Incroyable ce qu'il se passe aujourd'hui !!",
-        date: "01/08/2022",
-        post_commented: 1),
-    Post(
-        id_post: 2,
-        account: 2,
-        content: "J'aime trop les bonbons ;)",
-        date: "21/04/2023",
-        post_commented: 1),
-    Post(
-        id_post: 1,
-        account: 1,
-        content: "C'est Incroyable ce qu'il se passe aujourd'hui !!",
-        date: "01/08/2022",
-        post_commented: 1),
-  ];
+  Future<void> fetchAccount(List<ChatUsers> user) async {
+    final responseUser = await http
+        .get(Uri.parse('https://mindshare-ai.alwaysdata.net/api/account/${widget.account}'));
+
+    if (responseUser.statusCode == 200) {
+      final body = jsonDecode(responseUser.body);
+      user.add(ChatUsers.fromJson(body as Map<String, dynamic>));
+
+      // If the server did return a 200 OK response,
+      setState(() {
+
+      });
+
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load album');
+    }
+  }
+
+  Future<void> fetchPost(List<Post> posts, ChatUsers user) async {
+    final responsePost = await http
+        .get(Uri.parse('https://mindshare-ai.alwaysdata.net/api/post/${user.lastName}/${user.firstName}'));
+
+    if (responsePost.statusCode == 200) {
+      final body = jsonDecode(responsePost.body);
+
+      for(var i = 0; i < body.length; i++) {
+        posts.add(Post.fromJson(body[i] as Map<String, dynamic>));
+      }
+
+      // If the server did return a 200 OK response,
+      setState(() {
+
+      });
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load Post');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchAccount(user);
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (user.isEmpty) {
+      return Scaffold(
+        backgroundColor: Color.fromARGB(255, 15, 15, 30),
+        appBar: AppBar(
+          backgroundColor: Color.fromARGB(255, 15, 15, 30),
+          toolbarHeight: 70,
+          title: Image.asset('images/logoMindshare.png',
+            height: 60,),
+          centerTitle: true,
+        ),
+      );
+    }
+
+    if (posts.isEmpty) {
+      fetchPost(posts, user[0]);
+    }
+
     return Scaffold(
         backgroundColor: Color.fromARGB(255, 15, 15, 30),
+        appBar: AppBar(
+          backgroundColor: Color.fromARGB(255, 15, 15, 30),
+          toolbarHeight: 70,
+          title: Image.asset('images/logoMindshare.png',
+            height: 60,),
+          centerTitle: true,
+        ),
         body: SingleChildScrollView(
             child: Column(
           children: [
             Column(
               children: [
-                const SizedBox(height: 100),
+                const SizedBox(height: 50),
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: SizedBox(
@@ -87,7 +118,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             shape: BoxShape.circle,
                             image: DecorationImage(
                                 fit: BoxFit.cover,
-                                image: NetworkImage(user.imageURL)),
+                                image: AssetImage('images/${user[0].lastName}${user[0].firstName}.jpg'),
+                            ),
                           ),
                         ),
                         Positioned(
@@ -113,21 +145,12 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: Column(
                     children: [
                       Text(
-                        user.name,
-                        style: Theme.of(context).textTheme.headline6?.copyWith(
+                        user[0].lastName + " " + user[0].firstName,
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
                             fontWeight: FontWeight.bold, color: Colors.white),
                       ),
                       const SizedBox(height: 16),
-                      FloatingActionButton.extended(
-                        onPressed: () {},
-                        heroTag: 'message',
-                        elevation: 0,
-                        backgroundColor: Colors.grey.shade500,
-                        label: const Text("Message"),
-                        icon: const Icon(Icons.message_rounded),
-                      ),
-                      const SizedBox(height: 16),
-                      const _ProfileInfoRow(),
+                      ProfileInfoRow(account: user[0].id),
                     ],
                   ),
                 ),
@@ -146,45 +169,6 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: Row(
-                                  children: <Widget>[
-                                    CircleAvatar(
-                                      backgroundImage: NetworkImage(
-                                          "https://images.unsplash.com/photo-1575739967915-f06fdc268a5b?auto=format&fit=crop&q=80&w=1982&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
-                                      maxRadius: 30,
-                                    ),
-                                    SizedBox(
-                                      width: 16,
-                                    ),
-                                    Expanded(
-                                      child: Container(
-                                        color: Colors.transparent,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: <Widget>[
-                                            Text(
-                                              "Debra Hawkins",
-                                              style: TextStyle(
-                                                  fontSize: 22,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.white),
-                                            ),
-                                            SizedBox(
-                                              height: 6,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
                           const SizedBox(height: 18),
                           Text(
                             posts[i].content,
@@ -198,28 +182,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 color: Colors.white.withOpacity(0.6)),
                           ),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              const Text(
-                                "2 Réponses",
-                                //Nombre de commentaires aux posts
-                                style: TextStyle(
-                                    fontStyle: FontStyle.italic,
-                                    color: Colors.grey),
-                              ),
-                              IconButton(
-                                icon: Icon(
-                                  Icons.comment,
-                                  color: Colors.white70,
-                                ),
-                                onPressed: () {
-                                  Navigator.push(context,
-                                      MaterialPageRoute(builder: (context) {
-                                    return CommentaryPost(account: 1);
-                                  }));
-                                },
-                              )
-                            ],
+                            mainAxisAlignment: MainAxisAlignment.end
                           ),
                         ],
                       ),
@@ -230,30 +193,70 @@ class _ProfilePageState extends State<ProfilePage> {
           ],
         ))
         //_ProfilePost(),
-        );
+    );
   }
 }
 
-class _ProfileInfoRow extends StatelessWidget {
-  const _ProfileInfoRow({Key? key}) : super(key: key);
+class ProfileInfoRow extends StatefulWidget {
+  final int account;
 
-  final List<ProfileInfoItem> _items = const [
-    ProfileInfoItem("Posts", 900), // Compter le nombres de posts
-    ProfileInfoItem("Réponses", 120), // Compter le nombres de réponses
-  ];
+  ProfileInfoRow({required this.account});
+
+  @override
+  _ProfileInfoRow createState() {
+    return _ProfileInfoRow();
+  }
+}
+
+class _ProfileInfoRow extends State<ProfileInfoRow> {
+  final List<ProfileInfoItem> items = [];
+
+  Future<void> fetchStats(List<ProfileInfoItem> items) async {
+    final responsePost = await http
+        .get(Uri.parse('https://mindshare-ai.alwaysdata.net/api/post/stats/${widget.account}'));
+
+    if (responsePost.statusCode == 200) {
+      final body = jsonDecode(responsePost.body) as Map<String, dynamic>;
+
+      items.add(ProfileInfoItem("Posts", body["nb_posts"] as int));
+      items.add(ProfileInfoItem("Commentaires", body["nb_comments"] as int));
+
+      // If the server did return a 200 OK response,
+      setState(() {
+
+      });
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load Post');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchStats(items);
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (items.isEmpty) {
+      return Container(
+        height: 80,
+        constraints: const BoxConstraints(maxWidth: 400)
+      );
+    }
+
     return Container(
       height: 80,
       constraints: const BoxConstraints(maxWidth: 400),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: _items
+        children: items
             .map((item) => Expanded(
                     child: Row(
                   children: [
-                    if (_items.indexOf(item) != 0)
+                    if (items.indexOf(item) != 0)
                       const VerticalDivider(
                         color: Colors.white,
                       ),

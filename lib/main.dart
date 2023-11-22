@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: {
-        '/profile': (context) => ProfilePage(),
+        '/profile': (context) => ProfilePage(account: 1),
       },
 
       title: 'Flutter Demo',
