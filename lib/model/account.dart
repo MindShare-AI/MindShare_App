@@ -27,13 +27,13 @@ class Account {
   }
 
   // STATIC METHODS
-  static Account fromJson(Map<String, dynamic> json) {
+  static Account fromArray(Map<String, dynamic> array) {
     return Account(
-      id: json['id_account'] as int,
-      lastName: json['last_name'] as String,
-      firstName: json['first_name'] as String,
-      age: json['years_old'] as int,
-      biography: json['biography'] as String,
+      id: array['id_account'] as int,
+      lastName: array['last_name'] as String,
+      firstName: array['first_name'] as String,
+      age: array['years_old'] as int,
+      biography: array['biography'] as String,
     );
   }
 }
